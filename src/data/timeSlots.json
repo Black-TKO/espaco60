@@ -1,0 +1,6 @@
+[
+  { "id": 1, "label": "Manhã",        "time": "09:00 – 13:00", "price": 800,  "icon": "Sun" },
+  { "id": 2, "label": "Tarde",        "time": "14:00 – 18:00", "price": 800,  "icon": "Sun" },
+  { "id": 3, "label": "Noite",        "time": "19:00 – 23:00", "price": 1000, "icon": "Moon" },
+  { "id": 4, "label": "Dia Completo", "time": "09:00 – 23:00", "price": 2200, "icon": "Star" }
+]

@@ -1,0 +1,72 @@
+// src/styles/partials/_tokens.scss
+
+$theme: (
+  c-bg: #FFF4EA,
+  c-card: #FFFFFF,
+  c-primary: #FD8F2D,
+  c-primary-d: #C96516,
+  c-primary-l: #FFDCC0,
+  c-accent: #D46A00,
+  c-accent-l: #FFF0D9,
+  c-gold: #E08A18,
+  c-gold-l: #FFF1C7,
+  c-success: #2E7D32,
+  c-success-l: #E8F5E9,
+  c-danger: #C62828,
+  c-text: #0B0B0B,
+  c-muted: #6B6B6B,
+  c-border: #F6C5A0,
+  c-shadow: rgba(253, 143, 45, .14),
+
+  f-head: 'Inter, system-ui, sans-serif',
+  f-body: 'Inter, system-ui, sans-serif',
+
+  r-sm: 8px,
+  r-md: 14px,
+  r-lg: 20px,
+  r-xl: 32px,
+  r-full: 9999px,
+
+  sh-sm: 0 2px 8px rgba(253, 143, 45, .14),
+  sh-md: 0 6px 24px rgba(253, 143, 45, .14),
+  sh-lg: 0 12px 48px rgba(253, 143, 45, .22),
+
+  t: .2s ease,
+  sp: 16px
+);
+
+:root {
+  --c-bg: #{map-get($theme, c-bg)};
+  --c-card: #{map-get($theme, c-card)};
+  --c-primary: #{map-get($theme, c-primary)};
+  --c-primary-d: #{map-get($theme, c-primary-d)};
+  --c-primary-l: #{map-get($theme, c-primary-l)};
+  --c-accent: #{map-get($theme, c-accent)};
+  --c-accent-l: #{map-get($theme, c-accent-l)};
+  --c-gold: #{map-get($theme, c-gold)};
+  --c-gold-l: #{map-get($theme, c-gold-l)};
+  --c-success: #{map-get($theme, c-success)};
+  --c-success-l: #{map-get($theme, c-success-l)};
+  --c-danger: #{map-get($theme, c-danger)};
+  --c-text: #{map-get($theme, c-text)};
+  --c-muted: #{map-get($theme, c-muted)};
+  --c-border: #{map-get($theme, c-border)};
+  --c-shadow: #{map-get($theme, c-shadow)};
+
+  --f-head: #{map-get($theme, f-head)};
+  --f-body: #{map-get($theme, f-body)};
+
+  --r-sm: #{map-get($theme, r-sm)};
+  --r-md: #{map-get($theme, r-md)};
+  --r-lg: #{map-get($theme, r-lg)};
+  --r-xl: #{map-get($theme, r-xl)};
+  --r-full: #{map-get($theme, r-full)};
+
+  --sh-sm: #{map-get($theme, sh-sm)};
+  --sh-md: #{map-get($theme, sh-md)};
+  --sh-lg: #{map-get($theme, sh-lg)};
+
+  --t: #{map-get($theme, t)};
+  --sp: #{map-get($theme, sp)};
+}
+

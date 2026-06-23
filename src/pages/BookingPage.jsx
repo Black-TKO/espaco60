@@ -47,6 +47,7 @@ export default function BookingPage() {
             canStep2={booking.canStep2}
             nextStep={booking.nextStep}
             prevStep={booking.prevStep}
+            timeSlots={booking.timeSlots} // <-- novo prop: time slots dinâmicos
           />
         )}
         {booking.step === 3 && (

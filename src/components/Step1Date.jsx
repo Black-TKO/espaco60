@@ -1,5 +1,5 @@
 import Calendar from '../components/Calendar';
-
+import {Icons} from "../components/Icons/Icons.jsx";
 export default function Step1({ currentMonth, currentYear, selectedDate, formattedDate, onDayClick, onPrevMonth, onNextMonth, nextStep }) {
   return (
     <section className="section">
@@ -19,7 +19,7 @@ export default function Step1({ currentMonth, currentYear, selectedDate, formatt
 
       {selectedDate && (
         <div className="info-banner">
-          <span>📅</span>
+          <span> <Icons.Calendar style={{ fontSize:"1.5rem" }} />   </span>
           <span>Data selecionada: <strong>{formattedDate}</strong></span>
         </div>
       )}

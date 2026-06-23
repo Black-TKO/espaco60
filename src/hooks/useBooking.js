@@ -1,6 +1,7 @@
+// src/hooks/useBooking.js
 import { useState } from 'react';
-import { CONFIG } from '../config';
-import { getBookings, saveBookings, generateQRCodeSvg } from '../utils/helpers';
+import { CONFIG } from '../config/config';
+import { getBookings, saveBookings, generateQRCodeSvg, getTimeSlots, getPricing } from '../utils/helpers';
 
 export function useBooking() {
   const [step, setStep] = useState(1);
@@ -19,6 +20,9 @@ export function useBooking() {
   const [bookingId, setBookingId] = useState('');
 
   const qrCodeSvg = generateQRCodeSvg(CONFIG.pixKey);
+
+  const timeSlots = getTimeSlots(); // dynamic slots
+  const pricing = getPricing(); // dynamic pricing
 
   const nextStep = () => {
     setStep(s => s + 1);
@@ -62,8 +66,21 @@ export function useBooking() {
     ? (() => { const [y, m, d] = selectedDate.split('-'); return `${d}/${m}/${y}`; })()
     : '';
 
-  const currentSlot = CONFIG.timeSlots.find(s => s.id === selectedSlot) || null;
-  const totalPrice = currentSlot ? currentSlot.price : 0;
+  // find currentSlot
+  const currentSlot = (timeSlots || []).find(s =>
+    s && (s.id === selectedSlot || String(s.id) === String(selectedSlot))
+  ) || null;
+
+  // calculate total price dynamically based on pricing and peopleCount
+  function calcTotalPrice(people = peopleCount) {
+    const base = Number(pricing.basePrice) || 0;
+    const included = Number(pricing.includedGuests) || 0;
+    const extra = Number(pricing.extraPerGuest) || 0;
+    const over = Math.max(0, Number(people) - included);
+    return base + (over * extra);
+  }
+
+  const totalPrice = calcTotalPrice(peopleCount);
 
   const canStep2 = !!(
     selectedSlot &&
@@ -170,5 +187,6 @@ export function useBooking() {
     setSelectedSlot,
     formattedDate, currentSlot, totalPrice, canStep2,
     copyPix, onReceiptChange, finalize, resetApp,
+    timeSlots, pricing,
   };
 }

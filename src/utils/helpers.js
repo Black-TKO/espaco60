@@ -1,3 +1,9 @@
+// src/utils/helpers.js
+import timeSlotsData from '../data/timeSlots.json';
+import bookingsSeed from '../data/bookings.json';
+import pricingSeed from '../data/pricing.json';
+
+// Formata moeda
 export function formatCurrency(v) {
   return `R$ ${Number(v || 0)
     .toFixed(2)
@@ -19,8 +25,8 @@ export function formatDateTime(iso) {
   });
 }
 
-export function phoneMask(value) {
-  let v = value.replace(/\D/g, '');
+export function phoneMask(value = '') {
+  let v = String(value).replace(/\D/g, '');
   if (v.length > 11) v = v.slice(0, 11);
   if (v.length > 6)  v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
   else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
@@ -28,20 +34,98 @@ export function phoneMask(value) {
   return v;
 }
 
-export function getBookings() {
-  try { return JSON.parse(localStorage.getItem('salonBookings') || '[]'); }
-  catch { return []; }
+// ------------------------ DATA ACCESS ------------------------
+
+// time slots (sempre do JSON)
+export function getTimeSlots() {
+  try {
+    return Array.isArray(timeSlotsData) ? timeSlotsData : [];
+  } catch (err) {
+    console.error('getTimeSlots error:', err);
+    return [];
+  }
 }
 
-export function saveBookings(bookings) {
-  localStorage.setItem('salonBookings', JSON.stringify(bookings));
+// bookings: usamos um seed (bookingsSeed) e um store em memória para alterações durante a sessão
+let _inMemoryBookings = null;
+
+function clone(v) {
+  return JSON.parse(JSON.stringify(v));
 }
+
+export function getBookings() {
+  try {
+    if (Array.isArray(_inMemoryBookings)) return clone(_inMemoryBookings);
+    return Array.isArray(bookingsSeed) ? clone(bookingsSeed) : [];
+  } catch (err) {
+    console.error('getBookings error:', err);
+    return [];
+  }
+}
+
+export function saveBookings(next) {
+  try {
+    _inMemoryBookings = Array.isArray(next) ? clone(next) : [];
+  } catch (err) {
+    console.error('saveBookings error:', err);
+  }
+}
+
+export function resetBookingsToSeed() {
+  _inMemoryBookings = Array.isArray(bookingsSeed) ? clone(bookingsSeed) : [];
+}
+
+// ------------------------ PRICING ------------------------
+const PRICING_KEY = 'salonPricing';
+
+export function getPricing() {
+  try {
+    const raw = localStorage.getItem(PRICING_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        basePrice: Number(parsed.basePrice) || Number(pricingSeed.basePrice) || 350,
+        includedGuests: Number(parsed.includedGuests) || Number(pricingSeed.includedGuests) || 50,
+        extraPerGuest: Number(parsed.extraPerGuest) || Number(pricingSeed.extraPerGuest) || 0,
+      };
+    }
+    if (pricingSeed) {
+      return {
+        basePrice: Number(pricingSeed.basePrice) || 350,
+        includedGuests: Number(pricingSeed.includedGuests) || 50,
+        extraPerGuest: Number(pricingSeed.extraPerGuest) || 0,
+      };
+    }
+    return { basePrice: 350, includedGuests: 50, extraPerGuest: 0 };
+  } catch (err) {
+    console.error('getPricing error:', err);
+    return { basePrice: 350, includedGuests: 50, extraPerGuest: 0 };
+  }
+}
+
+export function savePricing(pricing) {
+  try {
+    const safe = {
+      basePrice: Number(pricing.basePrice) || 350,
+      includedGuests: Number(pricing.includedGuests) || 50,
+      extraPerGuest: Number(pricing.extraPerGuest) || 0,
+    };
+    localStorage.setItem(PRICING_KEY, JSON.stringify(safe));
+    return safe;
+  } catch (err) {
+    console.error('savePricing error:', err);
+    return null;
+  }
+}
+
+// ------------------------ UTILITIES ------------------------
 
 export function isDateFull(dateStr, bookings, timeSlots) {
-  const occupied = bookings.filter(
-    b => b.date === dateStr && b.status !== 'cancelled'
-  ).map(b => b.timeSlot);
-  return timeSlots.every(s => occupied.includes(s.time));
+  const slots = Array.isArray(timeSlots) ? timeSlots : getTimeSlots();
+  const occupied = (bookings || [])
+    .filter(b => b.date === dateStr && b.status !== 'cancelled')
+    .map(b => b.timeSlot);
+  return slots.every(s => occupied.includes(s.time));
 }
 
 export function statusLabel(status) {
@@ -54,6 +138,7 @@ export function statusLabel(status) {
   return map[status] || status;
 }
 
+// Gera um QR code simplificado em SVG (mock)
 export function generateQRCodeSvg(pixKey) {
   const M = 21;
   const C = 8;
@@ -84,7 +169,7 @@ export function generateQRCodeSvg(pixKey) {
   g[13][8] = true;
 
   let seed = 0;
-  for (const ch of pixKey)
+  for (const ch of String(pixKey || ''))
     seed = ((seed * 31) + ch.charCodeAt(0)) >>> 0;
   const rand = () => {
     seed = ((seed * 1664525) + 1013904223) >>> 0;

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { CONFIG } from '../config';
+import { CONFIG } from '../config/config';
 import { getBookings, isDateFull } from '../utils/helpers';
 
 const MONTH_NAMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',

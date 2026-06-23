@@ -1,13 +1,42 @@
-import { CONFIG } from '../config';
-import { getBookings, formatCurrency, phoneMask } from '../utils/helpers';
+import { getBookings, formatCurrency, phoneMask, getPricing } from '../utils/helpers';
+import { Icons } from './Icons/Icons';
 
-export default function Step2({ selectedDate, selectedSlot, setSelectedSlot, formattedDate, customerName, setCustomerName, customerPhone, setCustomerPhone, peopleCount, setPeopleCount, customerNotes, setCustomerNotes, canStep2, nextStep, prevStep }) {
+export default function Step2({
+  timeSlots, // recebido do BookingPage/useBooking
+  selectedDate,
+  selectedSlot,
+  setSelectedSlot,
+  formattedDate,
+  customerName,
+  setCustomerName,
+  customerPhone,
+  setCustomerPhone,
+  peopleCount,
+  setPeopleCount,
+  customerNotes,
+  setCustomerNotes,
+  canStep2,
+  nextStep,
+  prevStep
+}) {
   const bookings = getBookings();
-  const availableSlots = CONFIG.timeSlots.map(s => ({
+  const slots = Array.isArray(timeSlots) ? timeSlots : [];
+  const pricing = getPricing();
+
+  const calcPrice = (people = peopleCount) => {
+    const base = Number(pricing.basePrice) || 0;
+    const included = Number(pricing.includedGuests) || 0;
+    const extra = Number(pricing.extraPerGuest) || 0;
+    const over = Math.max(0, Number(people) - included);
+    return base + (over * extra);
+  };
+
+  const availableSlots = slots.map(s => ({
     ...s,
     booked: !!selectedDate && bookings.some(
       b => b.date === selectedDate && b.timeSlot === s.time && b.status !== 'cancelled'
     ),
+    computedPrice: calcPrice(peopleCount)
   }));
 
   return (
@@ -18,26 +47,36 @@ export default function Step2({ selectedDate, selectedSlot, setSelectedSlot, for
       </div>
 
       <div className="slots">
-        {availableSlots.map(slot => (
-          <div
-            key={slot.id}
-            className={`slot${selectedSlot === slot.id ? ' slot--selected' : ''}${slot.booked ? ' slot--booked' : ''}`}
-            onClick={() => !slot.booked && setSelectedSlot(slot.id)}
-          >
-            <span className="slot__icon">{slot.icon}</span>
-            <div className="slot__body">
-              <strong className="slot__name">{slot.label}</strong>
-              <span className="slot__time">{slot.time}</span>
+        {availableSlots.map(slot => {
+          const IconComp = slot.icon && Icons[slot.icon] ? Icons[slot.icon] : null;
+          return (
+            <div
+              key={slot.id}
+              className={`slot${String(selectedSlot) === String(slot.id) ? ' slot--selected' : ''}${slot.booked ? ' slot--booked' : ''}`}
+              onClick={() => !slot.booked && setSelectedSlot(slot.id)}
+            >
+              <span className="slot__icon">
+                {IconComp ? <IconComp size={20} /> : (slot.icon || '')}
+              </span>
+              <div className="slot__body">
+                <strong className="slot__name">{slot.label}</strong>
+                <span className="slot__time">{slot.time}</span>
+              </div>
+              <div className="slot__right">
+                <span className="slot__price">{formatCurrency(slot.computedPrice)}</span>
+                {slot.booked
+                  ? <span className="slot__badge slot__badge--busy">Ocupado</span>
+                  : String(selectedSlot) === String(slot.id) && <span className="slot__badge slot__badge--ok">✓</span>
+                }
+              </div>
             </div>
-            <div className="slot__right">
-              <span className="slot__price">{formatCurrency(slot.price)}</span>
-              {slot.booked
-                ? <span className="slot__badge slot__badge--busy">Ocupado</span>
-                : selectedSlot === slot.id && <span className="slot__badge slot__badge--ok">✓</span>
-              }
-            </div>
+          );
+        })}
+        {slots.length === 0 && (
+          <div className="empty-state">
+            <p>Nenhum turno disponível.</p>
           </div>
-        ))}
+        )}
       </div>
 
       <div className="form">
@@ -57,6 +96,7 @@ export default function Step2({ selectedDate, selectedSlot, setSelectedSlot, for
             <input className="counter__input" type="number" value={peopleCount} onChange={e => setPeopleCount(Number(e.target.value))} min="1" max="300" />
             <button className="counter__btn" onClick={() => setPeopleCount(Math.min(300, peopleCount + 1))}>+</button>
           </div>
+          <div style={{ marginTop: 8 }}>Preço estimado: <strong>{formatCurrency(calcPrice(peopleCount))}</strong></div>
         </div>
         <div className="form__field">
           <label className="form__label">Observações</label>

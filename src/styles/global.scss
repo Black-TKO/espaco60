@@ -1,44 +1,6 @@
-/* ============================================================
-   ESPAÇO DA 60 — Design System
-   Paleta: Rosa/Dourado/Bordô com tons festivos
-   ============================================================ */
+@use './partials/tokens' as *;
+
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-
-:root {
-  /* — Paleta principal — */
-  --c-bg:          #FFF5F7;
-  --c-card:        #FFFFFF;
-  --c-primary:     #C2185B;   /* Rosa escuro */
-  --c-primary-d:   #880E4F;   /* Bordô */
-  --c-primary-l:   #FCE4EC;   /* Rosa suave */
-  --c-accent:      #D4A017;   /* Dourado */
-  --c-accent-l:    #FFF8E1;   /* Dourado suave */
-  --c-gold:        #F9A825;
-  --c-gold-l:      #FFF9C4;
-  --c-success:     #2E7D32;
-  --c-success-l:   #E8F5E9;
-  --c-danger:      #C62828;
-  --c-text:        #1A0A10;
-  --c-muted:       #8D6E73;
-  --c-border:      #F8BBD0;
-  --c-shadow:      rgba(194,24,91,.10);
-
-  --f-head:  'Playfair Display', Georgia, serif;
-  --f-body:  'Inter', system-ui, sans-serif;
-
-  --r-sm:   8px;
-  --r-md:   14px;
-  --r-lg:   20px;
-  --r-xl:   32px;
-  --r-full: 9999px;
-
-  --sh-sm:  0 2px 8px var(--c-shadow);
-  --sh-md:  0 6px 24px var(--c-shadow);
-  --sh-lg:  0 12px 48px rgba(194,24,91,.18);
-
-  --t: .2s ease;
-  --sp: 16px;
-}
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }

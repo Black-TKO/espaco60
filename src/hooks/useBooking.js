@@ -135,18 +135,18 @@ export function useBooking() {
     saveBookings(all);
 
     const lines = [
-      `🎉 *NOVO AGENDAMENTO – ${CONFIG.salonName}*`,
+      ` *NOVO AGENDAMENTO – ${CONFIG.salonName}*`,
       ``,
-      `👤 *Nome:* ${booking.customerName}`,
-      `📞 *WhatsApp:* ${booking.customerPhone}`,
-      `📅 *Data:* ${formattedDate}`,
-      `⏰ *Horário:* ${booking.timeSlot} (${booking.slotLabel})`,
-      `👥 *Convidados:* ${booking.people} pessoas`,
-      `💰 *Valor:* R$ ${Number(totalPrice).toFixed(2).replace('.', ',')},`,
+      ` *Nome:* ${booking.customerName}`,
+      ` *WhatsApp:* ${booking.customerPhone}`,
+      ` *Data:* ${formattedDate}`,
+      ` *Horário:* ${booking.timeSlot} (${booking.slotLabel})`,
+      ` *Convidados:* ${booking.people} pessoas`,
+      ` *Valor:* R$ ${Number(totalPrice).toFixed(2).replace('.', ',')},`,
       booking.customerNotes ? `📝 *Obs.:* ${booking.customerNotes}` : null,
       ``,
-      `✅ Comprovante de pagamento enviado em anexo`,
-      `🆔 *Código:* #${id}`,
+      ` Comprovante de pagamento enviado em anexo`,
+      ` *Código:* #${id}`,
       ``,
       `_Agendado em: ${new Date().toLocaleString('pt-BR')}_`,
     ].filter(l => l !== null).join('\n');
